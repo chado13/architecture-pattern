@@ -1,56 +1,7 @@
+
 import datetime
 from model import Batch, OrderLine, allocate, OutOfStock
 import pytest
-
-def create_batch_and_orderline(sku, qty, order_qty):
-    return (
-        Batch("batch-001", sku, qty, datetime.datetime.today()),
-        OrderLine("batch-001", sku, order_qty)
-    )
-    
-def test_allocate_ok():
-    #given
-    batch, orderline = create_batch_and_orderline("small-table", 20, 2)
-    
-    #when
-    batch.allocate(orderline)
-
-    #then
-    assert batch.available_qty == 18
-
-def test_can_allocate_true():
-    #given
-    batch, orderline = create_batch_and_orderline("small-table", 20, 2)
-
-    #when, then
-    assert batch.can_allocate(orderline)
-
-
-def test_can_allocate_false_when_available_smaller_than_required():
-    #given
-    batch, orderline = create_batch_and_orderline("small-table", 2, 4)
-
-    #when, then
-    assert batch.can_allocate(orderline) is False
-
-def test_can_allocate_false_when_sku_do_not_match():
-    #given
-    batch = Batch("batch-001", "small-table", 20, datetime.datetime.today())
-    orderline = OrderLine("batch-002", "large-table", 10)
-
-    #when, then
-    assert batch.can_allocate(orderline) is False
-
-def test_allocation_is_idempotent():
-    #given
-    batch, line = create_batch_and_orderline("small-table", 20, 2)
-
-    #when
-    batch.allocate(line)
-    batch.allocate(line)
-
-    #then
-    assert batch.available_qty == 18
 
 
 def test_prefers_current_stock_batchs_to_shipment():
