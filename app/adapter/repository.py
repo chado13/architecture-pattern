@@ -1,27 +1,33 @@
 import abc
 
-import model
+from sqlalchemy.ext.asyncio import AsyncSession
+
+import app.domain.model as model
+
 
 class AbstractRepository(abc.ABC):
     @abc.abstractmethod
-    def add(self, batch: model.Batches):
+    async def add(self, batch: model.Batches) -> None:
         ...
 
     @abc.abstractmethod
-    def get(self, ref: str) -> model.Batches:
+    async def get(self, ref: str) -> model.Batches:
+        ...
+
+    @abc.abstractmethod
+    async def fetch(self) -> list[model.Batches]:
         ...
 
 
 class SqlalchemyRepository(AbstractRepository):
-    def __init__(self, session):
+    def __init__(self, session: AsyncSession):
         self.session = session
 
-    def add(self, batch: model.Batches):
-        self.session.add(batch)
+    async def add(self, batch: model.Batches) -> None:
+        await self.session.add(batch)
 
-    def get(self, ref:str) -> model.Batches:
-        return self.session.query(model.Batches).filter_by(ref=ref).one()
-    
-    def fetch(self):
-        return self.session.query(model.Batches).all()
+    async def get(self, ref: str) -> model.Batches:
+        return await self.session.query(model.Batches).filter_by(ref=ref).one()
 
+    async def fetch(self) -> list[model.Batches]:
+        return await self.session.query(model.Batches).all()
