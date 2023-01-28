@@ -1,10 +1,10 @@
 import datetime
-from model import Batch, OrderLine, allocate, OutOfStock
+from model import Batches, OrderLine
 import pytest
 
 def create_batch_and_orderline(sku, qty, order_qty):
     return (
-        Batch("batch-001", sku, qty, datetime.datetime.today()),
+        Batches("batch-001", sku, qty, datetime.datetime.today()),
         OrderLine("batch-001", sku, order_qty)
     )
     
@@ -41,7 +41,7 @@ def test_can_allocate_if_available_equal_to_required():
 
 def test_can_allocate_false_when_sku_do_not_match():
     #given
-    batch = Batch("batch-001", "small-table", 20, datetime.datetime.today())
+    batch = Batches("batch-001", "small-table", 20, datetime.datetime.today())
     orderline = OrderLine("batch-002", "large-table", 10)
 
     #when, then
@@ -49,7 +49,7 @@ def test_can_allocate_false_when_sku_do_not_match():
 
 
 def test_cannot_allocate_if_skus_do_not_match():
-    batch = Batch("batch-001", "uncomfortable-chair", 100, eta=None)
+    batch = Batches("batch-001", "uncomfortable-chair", 100, eta=None)
     different_sku_line = OrderLine("order-123", "expensive-toaster", 10)
     assert batch.can_allocate(different_sku_line) is False
 
