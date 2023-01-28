@@ -1,36 +1,39 @@
 import datetime
-from model import Batches, OrderLine
-import pytest
+
+from app.domain.model import Batches, OrderLine
+
 
 def create_batch_and_orderline(sku, qty, order_qty):
     return (
         Batches("batch-001", sku, qty, datetime.datetime.today()),
-        OrderLine("batch-001", sku, order_qty)
+        OrderLine("batch-001", sku, order_qty),
     )
-    
+
+
 def test_allocating_to_a_batch_reduces_the_available_quantity():
-    #given
+    # given
     batch, orderline = create_batch_and_orderline("small-table", 20, 2)
-    
-    #when
+
+    # when
     batch.allocate(orderline)
 
-    #then
+    # then
     assert batch.available_qty == 18
 
+
 def test_can_allocate_if_available_greater_than_required():
-    #given
+    # given
     batch, orderline = create_batch_and_orderline("small-table", 20, 2)
 
-    #when, then
+    # when, then
     assert batch.can_allocate(orderline)
 
 
 def test_can_allocate_false_when_available_smaller_than_required():
-    #given
+    # given
     batch, orderline = create_batch_and_orderline("small-table", 2, 4)
 
-    #when, then
+    # when, then
     assert batch.can_allocate(orderline) is False
 
 
@@ -40,11 +43,11 @@ def test_can_allocate_if_available_equal_to_required():
 
 
 def test_can_allocate_false_when_sku_do_not_match():
-    #given
+    # given
     batch = Batches("batch-001", "small-table", 20, datetime.datetime.today())
     orderline = OrderLine("batch-002", "large-table", 10)
 
-    #when, then
+    # when, then
     assert batch.can_allocate(orderline) is False
 
 
@@ -55,14 +58,14 @@ def test_cannot_allocate_if_skus_do_not_match():
 
 
 def test_allocation_is_idempotent():
-    #given
+    # given
     batch, line = create_batch_and_orderline("small-table", 20, 2)
 
-    #when
+    # when
     batch.allocate(line)
     batch.allocate(line)
 
-    #then
+    # then
     assert batch.available_qty == 18
 
 
