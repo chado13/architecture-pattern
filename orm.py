@@ -2,11 +2,10 @@ from sqlalchemy.orm import relationship, registry
 import sqlalchemy as sa
 import model
 
-metadata = sa.MetaData()
 mapper_registry = registry()
 
 order_lines = sa.Table(
-    "order_lines", metadata,
+    "order_lines", mapper_registry.metadata,
     sa.Column("id", sa.Integer, primary_key=True, autoincrement=True),
     sa.Column("sku", sa.String(255)),
     sa.Column("qty", sa.Integer, nullable=False),
@@ -14,7 +13,7 @@ order_lines = sa.Table(
 )
 
 batches = sa.Table(
-    "batches", metadata,
+    "batches", mapper_registry.metadata,
     sa.Column("id", sa.Integer, primary_key=True, autoincrement=True),
     sa.Column("ref", sa.String(255)),
     sa.Column("sku", sa.String(255)),
@@ -23,7 +22,7 @@ batches = sa.Table(
 )
 
 allocations = sa.Table(
-    "allocations", metadata,
+    "allocations", mapper_registry.metadata,
     sa.Column("id", sa.Integer, primary_key=True, autoincrement=True),
     sa.Column("batch_id", sa.ForeignKey("batches.id")),
     sa.Column("orderline_id", sa.ForeignKey("order_lines.id"))
