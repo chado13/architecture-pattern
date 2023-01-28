@@ -1,6 +1,6 @@
 
 import model
-from repository import  SqlalchemyRepository
+from app.adapter.repository import  SqlalchemyRepository
 
 
 
