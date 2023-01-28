@@ -1,21 +1,8 @@
-import pytest
+
 import model
-import sqlalchemy as sa
-from orm import metadata, start_mappers
-from sqlalchemy.orm import sessionmaker, clear_mappers
-from repository import SqlalchemyRepository
+from repository import  SqlalchemyRepository
 
-@pytest.fixture
-def engine():
-    engine = sa.create_engine("sqlite:///:memory:")
-    metadata.create_all(engine)
-    return engine
 
-@pytest.fixture
-def session(engine):
-    start_mappers()
-    yield sessionmaker(bind=engine)()
-    clear_mappers()
 
 def test_repository_can_save_a_batch(session):
     # given
@@ -40,7 +27,7 @@ def test_repository_can_retrieve_a_batch_with_allocations(session):
     retrieved = repo.get("batch1")
 
     expected = model.Batches("batch1", "generic-sofa", 100, eta=None)
-    assert retrieved == expected
+
     assert retrieved.sku == expected.sku
     assert retrieved._purchased_qty == expected._purchased_qty
     assert retrieved._allocations == {

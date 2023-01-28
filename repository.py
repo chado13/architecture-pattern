@@ -8,7 +8,7 @@ class AbstractRepository(abc.ABC):
         ...
 
     @abc.abstractmethod
-    def get(self, id: str) -> model.Batches:
+    def get(self, ref: str) -> model.Batches:
         ...
 
 
@@ -19,9 +19,9 @@ class SqlalchemyRepository(AbstractRepository):
     def add(self, batch: model.Batches):
         self.session.add(batch)
 
-    def get(self, id:str) -> model.Batches:
-        return self.session.query(model.Batches).filter_by(id=id).one()
+    def get(self, ref:str) -> model.Batches:
+        return self.session.query(model.Batches).filter_by(ref=ref).one()
     
-    def get_list(self):
+    def fetch(self):
         return self.session.query(model.Batches).all()
 

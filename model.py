@@ -6,11 +6,12 @@ OrderId = NewType("OrderId", str)
 Sku = NewType("Sku", str)
 Qty = NewType("Qty", int)
 
-@dataclass(frozen=True)
+@dataclass(unsafe_hash=True)
 class OrderLine:
     order_id: OrderId
     sku: Sku
     qty: Qty
+
 
 class OutOfStock(Exception):
     pass
